@@ -3,3 +3,4 @@ package-lock.json
 out.diff
 static/
 dist/
+coverage/

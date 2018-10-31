@@ -55,7 +55,7 @@ class AuthRoute extends React.Component {
   }
 }
 
-// 浏览器历史这里统一使用hashHistory 不使用browserHistory
+// 生产环境中浏览器历史这里统一使用hashHistory 不使用browserHistory
 export default store => {
   let history = config.isDev ? createBrowserHistory() : createHashHistory();
   return (

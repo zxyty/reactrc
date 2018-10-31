@@ -6,14 +6,23 @@ class HomePage extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   };
+
+  static defaultProps = {
+    content: "测试"
+  }
+
   componentDidMount() {
-    
+    this.renderaa();
+  }
+
+  renderaa() {
+    console.log(2);
   }
 
   render() {
     return (
         <div className="testdiv">
-            jjjj
+            {this.props.content}
         </div>
     );
   }
