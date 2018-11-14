@@ -65,7 +65,7 @@ module.exports = function(config) {
             loader: "babel-loader",
             query: {
               presets: ["es2015", "react", "stage-0", "stage-1"],
-              plugins: ["transform-runtime", "transform-decorators-legacy"]
+              plugins: ["transform-runtime", "transform-decorators-legacy", "syntax-dynamic-import"]
             }
           },
           {

@@ -1,17 +1,15 @@
 import React, { Component, PropTypes } from "react";
 import {
-  BrowserRouter,
   Router,
   Route,
-  Redirect,
   Switch,
   withRouter
 } from "react-router-dom";
-import { createBrowserHistory, createHashHistory } from 'history'
+import { createBrowserHistory, createHashHistory } from "history";
+import config from "../config";
 
 // 默认导入首页
 import Home from "../page/Home";
-import config from "../config";
 
 // 路由验证
 // 可以在这一层做一步验证url权限
@@ -22,35 +20,34 @@ class AuthRoute extends React.Component {
     super(props);
     this.state = {
       hasChecked: false
-    }
+    };
   }
   componentWillMount() {
-    //conponentDidMount 组件加载完成时触发
+    // conponentDidMount 组件加载完成时触发
     // 如果没加这个注解你会发现答应出来的是undefind
-    console.log(this.props.history)
-    if(this.props.history.location.pathname == '/' || this.props.history.location.pathname == '/home/list') {
+    // console.log(this.props.history);
+    if (
+      this.props.history.location.pathname == "/" ||
+      this.props.history.location.pathname == "/home/list"
+    ) {
       this.state.hasChecked = true;
     } else {
       this.state.hasChecked = false;
     }
   }
   render() {
-    if(this.state.hasChecked) {
+    if (this.state.hasChecked) {
       return (
         <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path="/" component={Home} />
           <Route path="/home" component={Home}>
-            <Route path="/list" component={Home}></Route>
+            <Route path="/list" component={Home} />
           </Route>
         </Switch>
       );
     } else {
-      return (
-        <div>
-          没有权限
-        </div>
-      )
-    } 
+      return <div>没有权限</div>;
+    }
     // 处理404
   }
 }

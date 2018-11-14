@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import connectWithActions from "../redux/connectWithActions";
-import './index.less'
+import "./index.less";
 
 class HomePage extends Component {
   static contextTypes = {
@@ -8,8 +8,8 @@ class HomePage extends Component {
   };
 
   static defaultProps = {
-    content: "测试"
-  }
+    content: "测试2"
+  };
 
   componentDidMount() {
     this.renderaa();
@@ -20,13 +20,8 @@ class HomePage extends Component {
   }
 
   render() {
-    return (
-        <div className="testdiv">
-            {this.props.content}
-        </div>
-    );
+    return <div className="testdiv">{this.props.content +" 2 222"}</div>;
   }
 }
 
-export default connectWithActions((state, props) => ({
-}))(HomePage)
+export default connectWithActions((state, props) => ({}))(HomePage);

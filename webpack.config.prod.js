@@ -1,57 +1,78 @@
 const webpack = require("webpack");
 const path = require("path");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const extractTextPlugin = new ExtractTextPlugin('css/[name].css'); // 去掉css文件夹路径
-const extractTextPlugin = new ExtractTextPlugin('[name].css');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const Glob = require('glob');
-const srcDir = path.resolve(process.cwd(), 'src');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const IncludeAssetsPlugin = require("html-webpack-include-assets-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const AutoPreFixer = require("autoprefixer");
+const CssNaNo = require("cssnano");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const Glob = require("glob");
+const srcDir = path.resolve(process.cwd(), "src");
 
 // 入口 js
-let entryJs = (function () {
-  var entryJsFiles = Glob.sync(srcDir + '/entry/*.js');
+let entryJs = (function() {
+  var entryJsFiles = Glob.sync(srcDir + "/entry/*.js");
   var entryJsMap = {};
 
-  entryJsFiles.forEach(function (filePath) {
-      var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'));
-      entryJsMap[filename] = filePath;
+  entryJsFiles.forEach(function(filePath) {
+    var filename = filePath.substring(
+      filePath.lastIndexOf("/") + 1,
+      filePath.lastIndexOf(".")
+    );
+    entryJsMap[filename] = filePath;
   });
 
-  return entryJsMap
+  // entryJsMap["vendor"] = [
+  //   "react",
+  //   "react-dom",
+  //   "redux",
+  //   "react-router-dom",
+  //   "react-redux"
+  // ];
+
+  return entryJsMap;
 })();
 
 // 多文件html封装打包
-var Htmlplugins = (function () {
-  var entryHtml = Glob.sync(__dirname + '/views/*.html');
+var Htmlplugins = (function() {
+  var entryHtml = Glob.sync(__dirname + "/views/*.html");
   var r = [];
 
-  entryHtml.forEach(function (filePath) {
-      var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'));
+  entryHtml.forEach(function(filePath) {
+    var filename = filePath.substring(
+      filePath.lastIndexOf("/") + 1,
+      filePath.lastIndexOf(".")
+    );
 
-      var conf = {
-          filename: filename + '.html',       // 生成的 html 存放路径，相对于 path
-          inject: 'body',
-          template: __dirname + '/views/' + filename + '.html',
-          minify: {                           // 压缩 HTML 文件
-              removeComments: true,           // 移除 HTML 中的注释
-              collapseWhitespace: true        // 删除空白符与换行符
-          },
-          chunks: ['common', filename]
-      };
+    var conf = {
+      filename: filename + ".html", // 生成的 html 存放路径，相对于 path
+      inject: "body",
+      template: __dirname + "/views/" + filename + ".html",
+      minify: {
+        // 压缩 HTML 文件
+        removeComments: true, // 移除 HTML 中的注释
+        collapseWhitespace: true // 删除空白符与换行符
+      },
+      chunks: ["common", filename]
+    };
 
-      r.push(new HtmlWebpackPlugin(conf));
+    r.push(new HtmlWebpackPlugin(conf));
   });
   return r;
 })();
 
 module.exports = {
   entry: entryJs,
+  performance: {
+    hints: "warning"
+  },
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'static'),
-    // chunkFilename: '[name].js'      // 会增加打包后的大小
+    pathinfo: false,
+    filename: "[name].[chunkhash:8].js",
+    path: path.resolve(__dirname, "static")
   },
 
   // 外部对象
@@ -68,65 +89,114 @@ module.exports = {
 
   resolve: {
     enforceExtension: false,
-    extensions: ['.js', '.json'],
-    modules: ['node_modules'],      // 如果要添加要搜索的目录，该目录优先于node_modules/,  默认 ['node_modules']
+    extensions: [".js", ".json"],
+    modules: ["node_modules"], // 如果要添加要搜索的目录，该目录优先于node_modules/,  默认 ['node_modules']
     alias: {
-      cameras: __dirname + '/src/cameras/',
-      core: __dirname + '/src/core/',
-      materials: __dirname + '/src/materials/',
-      objects: __dirname + '/src/objects/',
-      renderers: __dirname + '/src/renderers/',
-      scenes: __dirname + '/src/scenes/'
+      cameras: __dirname + "/src/cameras/",
+      core: __dirname + "/src/core/",
+      materials: __dirname + "/src/materials/",
+      objects: __dirname + "/src/objects/",
+      renderers: __dirname + "/src/renderers/",
+      scenes: __dirname + "/src/scenes/"
     }
   },
 
   module: {
     rules: [
       {
-        test: /\.css|less$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: ['css-loader', 'less-loader']
-        })
+        test: /(\.less|\.css)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 2
+            }
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              plugins: [
+                AutoPreFixer({
+                  browsers: ["> 1%", "last 5 version"],
+                  cascade: false
+                }),
+                CssNaNo()
+              ]
+            }
+          },
+          {
+            loader: "less-loader",
+            options: {
+              javascriptEnabled: true
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        // use: {
-        //   loader: "babel-loader"
-        // }
-        loader: 'babel-loader',
+        loader: "babel-loader",
         query: {
-            presets: ['es2015', 'react', 'stage-0', 'stage-1'],
-            plugins: ['transform-runtime', 'transform-decorators-legacy']
-        },
+          presets: ["es2015", "react", "stage-0", "stage-1"],
+          plugins: [
+            "transform-runtime",
+            "transform-decorators-legacy",
+            "syntax-dynamic-import"
+          ]
+        }
       },
       {
         test: /\.(png|jpe?g|gif)$/,
         // loader: 'file-loader?limit=8192&name=/images/[name].[ext]'
-        use: 'url-loader?limit=8192',
+        use: "url-loader?limit=8192"
       },
-      // webpack 已经支持了json加载
-      // {
-      //   test: /\.json$/,
-      //   // loader: 'file-loader?limit=8192&name=/images/[name].[ext]'
-      //   use: 'json-loader',
-      // },
       {
         test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: 'file-loader?limit=10000&name=/fonts/[name].[ext]'
+        use: "file-loader?limit=10000&name=/fonts/[name].[ext]"
       }
     ]
   },
 
   plugins: [
-    extractTextPlugin,
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash:8].css"
+    }),
+
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify("production")
+    }),
+
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: path.resolve(__dirname, "dll", "manifest.json")
+    }),
+    new IncludeAssetsPlugin({
+      assets: [
+        {
+          path: "dll",
+          glob: "*.js",
+          globPath: path.join(__dirname, "dll")
+        }
+      ],
+      append: false
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, "dll"),
+        to: path.join(__dirname, "static", "dll")
+      }
+    ]),
+
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+
     new webpack.DefinePlugin({
       __ENV__: JSON.stringify("production")
     }),
-    
-    // 分析代码
-    // new BundleAnalyzerPlugin({ analyzerPort: 30010, }),
+
+    // 分析打包代码大小
+    new BundleAnalyzerPlugin({ analyzerPort: 30010 })
   ].concat(Htmlplugins),
 
   // When using the uglifyjs-webpack-plugin you must provide the sourceMap: true option to enable SourceMap support.
@@ -134,56 +204,40 @@ module.exports = {
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
-          uglifyOptions: {
-              compress: true,
-          },
-          sourceMap: true
+        uglifyOptions: {
+          compress: true
+        },
+        sourceMap: false
       })
-    ]
-  },
-
-  devtool: "source-map", // development ==> eval-source-map,  production ==> source-map
-
-  devServer: {
-    compress: true,       // Enable gzip compression for everything served:
-
-    contentBase: path.join(__dirname, 'static'),
-    /**
-     * 想象一下，服务器正在运行http://localhost:8080并被output.filename设置为bundle.js。
-     * 默认情况下publicPath为"/"，所以您的捆绑包可用http://localhost:8080/bundle.js
-     * 捆绑包现在可用http://localhost:8080/assets/bundle.js
-     */
-    // publicPath: 'assets',      //
-
-    lazy: false,
-
-    historyApiFallback: {
-      rewrites: [
-        // { from: /^\/$/, to: '/src/views/landing.html' },
-        // { from: /^\/subpage/, to: '/src/views/subpage.html' },
-        { from: /./, to: '/views/404.html' }
-      ],
-      disableDotRule: true,       // 禁用路径上匹配点"."的规则
+    ],
+    namedModules: false,
+    namedChunks: false,
+    nodeEnv: "production",
+    flagIncludedChunks: true,
+    occurrenceOrder: true,
+    sideEffects: true,
+    usedExports: true,
+    concatenateModules: true,
+    splitChunks: {
+      chunks: "all",
+      minSize: 30000,
+      minChunks: 1,
+      cacheGroups: {
+        common: {
+          name: "common",
+          test: /node_modules/,
+          chunks: "initial",
+          priority: -10,
+          enforce: true
+        }
+      }
     },
-
-    host: '127.0.0.1',
-    port: 30001,
-    hot: true,
-
-
-    https: false,                // 这个使用webpack自签名证书
-    // 也可以使用自己的签名
-    // https: {
-    //   key: fs.readFileSync('/path/to/server.key'),
-    //   cert: fs.readFileSync('/path/to/server.crt'),
-    //   ca: fs.readFileSync('/path/to/ca.pem'),
-    // }
-
-    open: true,                 // 自动打开dev浏览器
-    inline: false,              // 使用iframe打开
-    // 建议使用内联模式进行热模块更换，因为它包含来自websocket的HMR触发器。轮询模式可以作为替代，但需要额外的入口点，'webpack/hot/poll?1000'
-    
-    
+    noEmitOnErrors: true,
+    checkWasmTypes: true,
+    minimize: true
   },
-  mode: "production", //"development"
-}
+
+  devtool: false, //"cheap-module-source-map", // "source-map", // development ==> eval-source-map,  production ==> source-map
+
+  mode: "production" // "development"
+};
