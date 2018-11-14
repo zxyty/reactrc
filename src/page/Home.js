@@ -8,7 +8,7 @@ class HomePage extends Component {
   };
 
   static defaultProps = {
-    content: "测试2"
+    content: "aaa222测222试2"
   };
 
   componentDidMount() {
@@ -20,7 +20,7 @@ class HomePage extends Component {
   }
 
   render() {
-    return <div className="testdiv">{this.props.content +" 2 222"}</div>;
+    return <div className="testdiv">{this.props.content +" 2222 2aaa2"}</div>;
   }
 }
 

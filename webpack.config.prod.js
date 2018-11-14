@@ -91,14 +91,6 @@ module.exports = {
     enforceExtension: false,
     extensions: [".js", ".json"],
     modules: ["node_modules"], // 如果要添加要搜索的目录，该目录优先于node_modules/,  默认 ['node_modules']
-    alias: {
-      cameras: __dirname + "/src/cameras/",
-      core: __dirname + "/src/core/",
-      materials: __dirname + "/src/materials/",
-      objects: __dirname + "/src/objects/",
-      renderers: __dirname + "/src/renderers/",
-      scenes: __dirname + "/src/scenes/"
-    }
   },
 
   module: {

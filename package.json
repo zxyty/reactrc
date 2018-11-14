@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --config webpack.config.prod.js --progress",
-    "dev": "NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --color",
-    "dll": "NODE_ENV=production webpack --config webpack.config.dll.js",
+    "build": "NODE_ENV=production webpack --config build/webpack.config.prod.js --progress",
+    "dev": "NODE_ENV=development node server/index.js",
+    "dll": "NODE_ENV=production webpack --config build/webpack.config.dll.js",
     "test": "./node_modules/karma/bin/karma start --single-run"
   },
   "keywords": [
@@ -28,10 +28,12 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
     "babel-preset-typescript": "^7.0.0-alpha.19",
+    "compression": "^1.7.3",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^1.0.0",
     "cssnano": "^4.1.7",
     "es6-promise": "^4.2.4",
+    "express": "^4.16.4",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^2.0.0",
     "glob": "^7.1.3",
@@ -75,7 +77,8 @@
     "url-loader": "^1.1.1",
     "webpack": "^4.17.1",
     "webpack-bundle-analyzer": "^3.0.2",
-    "webtorrent": "^0.102.4"
+    "webpack-dev-middleware": "^3.4.0",
+    "webpack-hot-middleware": "^2.24.3"
   },
   "devDependencies": {
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
@@ -94,7 +97,6 @@
     "open-browser-webpack-plugin": "0.0.5",
     "phantomjs-prebuilt": "^2.1.16",
     "uglifyjs-webpack-plugin": "^2.0.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.9"
+    "webpack-cli": "^3.1.0"
   }
 }

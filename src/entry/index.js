@@ -6,6 +6,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import TranslationProvider from "../provider/TranslationProvider"; // 国际化配置
 import route from "../router/router.js"; // 路由配置
+import config from "../config";
 import { PersistGate } from "redux-persist/integration/react"; // 缓存配置
 import configure from "../redux/store/store.js"; // store配置
 import '../sentry';
@@ -24,3 +25,7 @@ ReactDOM.render(
   </Provider>,
   document.querySelector("#app")
 );
+
+if (config.isDev && module.hot) {
+  module.hot.accept();
+}

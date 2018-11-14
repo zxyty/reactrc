@@ -1,13 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const IncludeAssetsPlugin = require("html-webpack-include-assets-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const OpenBrowserPlugin = require("open-browser-webpack-plugin");
-// const ExtractTextPlugin = require("extract-text-webpack-plugin");
-// const extractTextPlugin = new ExtractTextPlugin("[name].css");
-// const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  // .BundleAnalyzerPlugin;
 const Glob = require("glob");
 const srcDir = path.resolve(process.cwd(), "src");
 
@@ -55,6 +48,10 @@ var Htmlplugins = (function() {
   return r;
 })();
 
+for (const k in entryJs) {
+  entryJs[k] = [entryJs[k], 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=5000'];
+}
+
 module.exports = {
   entry: entryJs,
   output: {
@@ -79,14 +76,6 @@ module.exports = {
     enforceExtension: false,
     extensions: [".js", ".json"],
     modules: ["node_modules"], // 如果要添加要搜索的目录，该目录优先于node_modules/,  默认 ['node_modules']
-    alias: {
-      cameras: __dirname + "/src/cameras/",
-      core: __dirname + "/src/core/",
-      materials: __dirname + "/src/materials/",
-      objects: __dirname + "/src/objects/",
-      renderers: __dirname + "/src/renderers/",
-      scenes: __dirname + "/src/scenes/"
-    }
   },
 
   module: {
@@ -129,12 +118,6 @@ module.exports = {
         // loader: 'file-loader?limit=8192&name=/images/[name].[ext]'
         use: "url-loader?limit=8192"
       },
-      // webpack 已经支持了json加载
-      // {
-      //   test: /\.json$/,
-      //   // loader: 'file-loader?limit=8192&name=/images/[name].[ext]'
-      //   use: 'json-loader',
-      // },
       {
         test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         use: "file-loader?limit=10000&name=/fonts/[name].[ext]"
@@ -143,24 +126,8 @@ module.exports = {
   },
 
   plugins: [
-    // extractTextPlugin,
     new webpack.DefinePlugin({
       __ENV__: JSON.stringify("development")
-    }),
-
-    new webpack.DllReferencePlugin({
-      context: __dirname,
-      manifest: path.resolve(__dirname, "dll", "manifest.json")
-    }),
-    new IncludeAssetsPlugin({
-      assets: [
-        {
-          path: "dll",
-          glob: "*.js",
-          globPath: path.join(__dirname, "dll")
-        }
-      ],
-      append: false
     }),
 
     // 另外需要使用webpack的两个插件
@@ -169,18 +136,6 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     
-    // When using the uglifyjs-webpack-plugin you must provide the sourceMap: true option to enable SourceMap support.
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: true,
-    //   minimize: true
-    // }),
-
-    // new OpenBrowserPlugin({
-    //   url: 'http://localhost:30001'
-    // }),
-
-    // 分析代码
-    // new BundleAnalyzerPlugin({ analyzerPort: 30010, }),
   ].concat(Htmlplugins),
 
   optimization: {
@@ -204,48 +159,6 @@ module.exports = {
   },
 
   devtool: "cheap-module-eval-source-map", //"eval-source-map", // development ==> eval-source-map,  production ==> source-map
-
-  devServer: {
-    disableHostCheck: false, // 设置为true时，此选项会绕过主机检查。不建议这样做，因为不检查主机的应用程序容易受到DNS重新绑定攻击
-    clientLogLevel: "info", // 可能的值是none，error，warning或者info（默认值）。
-
-    compress: true, // Enable gzip compression for everything served:
-
-    contentBase: path.join(__dirname, "static"),
-    /**
-     * 想象一下，服务器正在运行http://localhost:8080并被output.filename设置为bundle.js。
-     * 默认情况下publicPath为"/"，所以您的捆绑包可用http://localhost:8080/bundle.js
-     * 捆绑包现在可用http://localhost:8080/assets/bundle.js
-     */
-    // publicPath: 'assets',      //
-
-    lazy: false,
-
-    historyApiFallback: true,
-    // {
-    //   rewrites: [
-    //     // { from: /^\/$/, to: '/src/views/tpl/landing.html' },
-    //     // { from: /^\/subpage/, to: '/src/views/tpl/subpage.html' },
-    //     // { from: /./, to: '/views/404.html' }
-    //   ],
-    //   disableDotRule: true // 禁用路径上匹配点"."的规则
-    // },
-
-    host: "127.0.0.1",
-    port: 30001,
-    hot: true,
-
-    https: false, // 这个使用webpack自签名证书
-    // 也可以使用自己的签名
-    // https: {
-    //   key: fs.readFileSync('/path/to/server.key'),
-    //   cert: fs.readFileSync('/path/to/server.crt'),
-    //   ca: fs.readFileSync('/path/to/ca.pem'),
-    // }
-
-    open: true, // 自动打开dev浏览器
-    inline: false // 使用iframe打开
-    // 建议使用内联模式进行热模块更换，因为它包含来自websocket的HMR触发器。轮询模式可以作为替代，但需要额外的入口点，'webpack/hot/poll?1000'
-  },
+  
   mode: "development" //"production"
 };

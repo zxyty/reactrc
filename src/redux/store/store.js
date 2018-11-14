@@ -35,7 +35,7 @@ export default function configure(initialState = {}) {
   const persistedReducer = persistReducer(persistConfig, rootReducer);
   let store = create(persistedReducer, {}, enhancer);
 
-  if (module.hot) {
+  if (!config.isDev && module.hot) {
     module.hot.accept("../reducer", () => {
       store.replaceReducer(persistReducer(persistConfig, nextReducer));
     });
