@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --config build/webpack.config.prod.js --progress",
+    "build": "NODE_ENV=production webpack --config webpack.config.prod.js --progress",
     "dev": "NODE_ENV=development node server/index.js",
-    "dll": "NODE_ENV=production webpack --config build/webpack.config.dll.js",
+    "dll": "NODE_ENV=production webpack --config webpack.config.dll.js",
     "test": "./node_modules/karma/bin/karma start --single-run"
   },
   "keywords": [
