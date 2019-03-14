@@ -2,6 +2,8 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const Glob = require("glob");
+const AutoPreFixer = require("autoprefixer");
+const CssNaNo = require("cssnano");
 const srcDir = path.resolve(process.cwd(), "src");
 
 // 入口 js
@@ -49,7 +51,10 @@ var Htmlplugins = (function() {
 })();
 
 for (const k in entryJs) {
-  entryJs[k] = [entryJs[k], 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=5000'];
+  entryJs[k] = [
+    entryJs[k],
+    "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=5000"
+  ];
 }
 
 module.exports = {
@@ -75,8 +80,12 @@ module.exports = {
   resolve: {
     enforceExtension: false,
     extensions: [".js", ".json"],
-    modules: ["node_modules"], // 如果要添加要搜索的目录，该目录优先于node_modules/,  默认 ['node_modules']
+    modules: ["node_modules"] // 如果要添加要搜索的目录，该目录优先于node_modules/,  默认 ['node_modules']
   },
+
+  // resolveLoader: {
+  //   modules: [path.resolve(__dirname, "loaders"), "node_modules"]
+  // },
 
   module: {
     rules: [
@@ -90,11 +99,24 @@ module.exports = {
             loader: "css-loader"
           },
           {
+            loader: "postcss-loader",
+            options: {
+              // 如果没有options这个选项将会报错 No PostCSS Config found
+              plugins: [
+                AutoPreFixer({
+                  browsers: ["> 1%", "last 5 version"],
+                  cascade: false
+                }),
+                CssNaNo()
+              ]
+            }
+          },
+          {
             loader: "less-loader",
             options: {
               javascriptEnabled: true
             }
-          }
+          },
         ]
       },
       {
@@ -122,6 +144,12 @@ module.exports = {
         test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         use: "file-loader?limit=10000&name=/fonts/[name].[ext]"
       }
+      // {
+      //   test: /\.mvc$/,
+      //   exclude: /node_modules/,
+      //   include: [path.resolve(__dirname, "src")],
+      //   use: "hello-loader"
+      // }
     ]
   },
 
@@ -134,8 +162,7 @@ module.exports = {
     new webpack.NamedChunksPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    
+    new webpack.NoEmitOnErrorsPlugin()
   ].concat(Htmlplugins),
 
   optimization: {
@@ -159,6 +186,6 @@ module.exports = {
   },
 
   devtool: "cheap-module-eval-source-map", //"eval-source-map", // development ==> eval-source-map,  production ==> source-map
-  
+
   mode: "development" //"production"
 };

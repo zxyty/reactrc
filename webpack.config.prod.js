@@ -188,7 +188,7 @@ module.exports = {
     }),
 
     // 分析打包代码大小
-    new BundleAnalyzerPlugin({ analyzerPort: 30010 })
+    // new BundleAnalyzerPlugin({ analyzerPort: 30010 })
   ].concat(Htmlplugins),
 
   // When using the uglifyjs-webpack-plugin you must provide the sourceMap: true option to enable SourceMap support.

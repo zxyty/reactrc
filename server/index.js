@@ -5,7 +5,7 @@ const webpackHotMiddleware = require("webpack-hot-middleware");
 const webpackConfig = require("../webpack.config.dev");
 const compress = require("compression");
 const app = express();
-const port = 30001;
+const port = 3001;
 const compiler = webpack(webpackConfig);
 
 app.use(compress());
