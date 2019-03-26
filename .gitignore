@@ -4,5 +4,4 @@ out.diff
 static/
 dist/
 coverage/
-dll/
-loaders/
+yarn.lock

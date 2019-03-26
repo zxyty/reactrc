@@ -21,7 +21,7 @@ module.exports = function(config) {
       "karma-coverage-istanbul-reporter",
       "karma-spec-reporter"
     ],
-    // browsers: ["PhantomJS", "Firefox", "Chrome"],
+    alias: {},
     browsers: ["Chrome"],
     preprocessors: {
       "test/**/*_spec.js": ["webpack"]
@@ -44,10 +44,29 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true
     },
     webpack: {
+      resolve: {
+        enforceExtension: false,
+        extensions: [".js", ".json"],
+        modules: ["node_modules"],
+        alias: {
+          "@src": path.resolve(__dirname, "./src"),
+          "@constants": path.resolve(__dirname, "./src/constants"),
+          "@utils": path.resolve(__dirname, "./src/utils")
+        }
+      },
       plugins: [
         extractTextPlugin,
         new webpack.DefinePlugin({
-          __ENV__: JSON.stringify("development")
+          __ENV__: JSON.stringify("production")
+        }),
+        new webpack.DefinePlugin({
+          __MOCK__:
+            process.env.SERVER_ENV === "mock"
+              ? JSON.stringify({
+                  host: process.env.MOCK_H_ENV || "localhost",
+                  port: process.env.MOCK_P_ENV || process.env.PORT_ENV || 8080
+                })
+              : false
         })
       ],
       module: {
@@ -65,7 +84,11 @@ module.exports = function(config) {
             loader: "babel-loader",
             query: {
               presets: ["es2015", "react", "stage-0", "stage-1"],
-              plugins: ["transform-runtime", "transform-decorators-legacy", "syntax-dynamic-import"]
+              plugins: [
+                "transform-runtime",
+                "transform-decorators-legacy",
+                "syntax-dynamic-import"
+              ]
             }
           },
           {

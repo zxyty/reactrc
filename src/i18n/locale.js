@@ -1,6 +1,4 @@
 /* @flow */
-/* eslint-disable */
-
 import { addLocaleData } from "react-intl";
 import ar from "react-intl/locale-data/ar";
 import bg from "react-intl/locale-data/bg";
@@ -27,28 +25,6 @@ import ta from "react-intl/locale-data/ta";
 import tr from "react-intl/locale-data/tr";
 import zh from "react-intl/locale-data/zh";
 
-[
-  ar,
-  bg,
-  ca,
-  cs,
-  de,
-  en,
-  es,
-  fr,
-  hi,
-  hu,
-  it,
-  ja,
-  ko,
-  ml,
-  nl,
-  pl,
-  pt,
-  ru,
-  sr,
-  sv,
-  ta,
-  tr,
-  zh
-].forEach(locale => addLocaleData(locale));
+[ar, bg, ca, cs, de, en, es, fr, hi, hu, id, it, ja, ko, ml, nl, pl, pt, ru, sr, sv, ta, tr, zh].forEach(locale =>
+  addLocaleData(locale)
+);

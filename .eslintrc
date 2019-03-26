@@ -1,0 +1,24 @@
+{
+  "parser": "babel-eslint",
+  "plugins": ["react", "prettier", "deprecate"],
+  "parserOptions": {
+    "ecmaFeatures": { "legacyDecorators": true }
+  },
+  "extends": ["prettier", "prettier/react"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false,
+        "trailingComma": "es5",
+        "jsxBracketSameLine": true,
+        "semi": true
+      }
+    ]
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  }
+}

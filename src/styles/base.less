@@ -1,0 +1,61 @@
+@cssPrefix: cp;
+
+@shadow-color: #ccc;
+@default-color: #2d4054;
+@hover-txt-color: #00b4cf;
+
+@running-color: #ff9a2a;
+@idle-color: #7fbc39;
+
+@pcolor: #00b4cf;
+@pcolor-hover: #01868a;
+@dcolor: #2d4054;
+@dcolor-hover: #435466;
+
+@bg-color: #f3f3f3;
+@drop-bg-color: #efefef;
+
+.run-bg-material {
+  background: @running-color;
+  color: #fff;
+}
+
+.idle-bg-material {
+  background: @idle-color;
+  color: #fff;
+}
+
+.add-color-material {
+  background: @pcolor;
+  color: #fff;
+}
+
+.add-color-material-active {
+  background: @pcolor-hover;
+  color: #fff;
+}
+
+.cancel-color-material {
+  background: @dcolor;
+  color: #fff;
+}
+
+.cancel-color-material-active {
+  background: @dcolor-hover;
+  color: #fff;
+}
+
+.menu-color-material-active {
+  background: #445465;
+  color: @hover-txt-color;
+}
+
+.txt-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body {
+  background: @bg-color;
+}

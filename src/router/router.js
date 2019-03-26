@@ -1,20 +1,24 @@
-import React, { Component, PropTypes } from "react";
-import {
-  Router,
-  Route,
-  Switch,
-  withRouter,
-  HashRouter
-} from "react-router-dom";
-import { createBrowserHistory, createHashHistory } from "history";
-import config from "../config";
+import React from "react";
+import { Route, Switch, withRouter, HashRouter } from "react-router-dom";
+import Loadable from "react-loadable";
 
-// 默认导入首页
-import Home from "../page/Home";
+function loading() {
+  return <div>Loading...</div>;
+}
+
+const HomePage = Loadable({
+  loader: () => import("../page/index"),
+  loading,
+});
+
+const Page404 = Loadable({
+  loader: () => import("../page/404"),
+  loading,
+});
 
 // 路由验证
 // 可以在这一层做一步验证url权限
-// 加上这个注解之后 及时该组件未被挂载在react-router上也可以使用react-router里的对象history等
+// 加上这个注解之后 即使该组件未被挂载在react-router上也可以使用react-router里的对象history等
 @withRouter
 class AuthRoute extends React.Component {
   constructor(props) {
@@ -22,21 +26,19 @@ class AuthRoute extends React.Component {
   }
   componentWillMount() {
     // conponentDidMount 组件加载完成时触发
-    // 如果没加这个注解你会发现答应出来的是undefind
+    // 如果没加这个注解你会发现打印history出来的是undefind
   }
   render() {
     return (
       <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/home" component={Home} />
+        <Route path="/" component={HomePage} />
+        <Route component={Page404} />
       </Switch>
     );
   }
 }
 
-// 生产环境中浏览器历史这里统一使用hashHistory 不使用browserHistory
 export default store => {
-  // let history = config.isDev ? createBrowserHistory() : createHashHistory();
   return (
     <HashRouter>
       {/* //这个组件就用来判断用户是否有相对的权限，跳转到什么页面，但是并没有挂载在路由上 按道理来说这个组件使用不了router的history对象 但是react-router-dom 给我们提供了一个注解@withRouter  */}
@@ -44,3 +46,7 @@ export default store => {
     </HashRouter>
   );
 };
+
+export function TestRouter({ children }) {
+  return <HashRouter>{children}</HashRouter>;
+}
