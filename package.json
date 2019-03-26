@@ -1,7 +1,7 @@
 {
-  "name": "reactgl",
-  "version": "0.0.1",
-  "description": "",
+  "name": "reactrc",
+  "version": "1.1.0",
+  "description": "webpack4 react es6 dva router4",
   "main": "index.js",
   "scripts": {
     "start": "json-server --watch ./server/db.json --port 3001 | npm run dev-mock",
