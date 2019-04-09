@@ -1,3 +1,4 @@
+import "core-js";
 import React from "react";
 import ReactDOM from "react-dom";
 import StoreProvider, { store } from "../provider/StoreProvider";

@@ -6,7 +6,7 @@ class HomePage extends PureComponent {
     return (
       <LayoutIndex>
         <div style={{ width: 300, margin: "0 auto", marginTop: "200px", fontSize: 30, textAlign: "center" }}>
-          Hello Reactgl
+          Hello Reactrc
         </div>
       </LayoutIndex>
     );

@@ -31,7 +31,7 @@ class AuthRoute extends React.Component {
   render() {
     return (
       <Switch>
-        <Route path="/" component={HomePage} />
+        <Route exact path="/" component={HomePage} />
         <Route component={Page404} />
       </Switch>
     );

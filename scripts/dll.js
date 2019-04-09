@@ -4,6 +4,7 @@ const path = require("path");
 module.exports = {
   entry: {
     vendor: [
+      "core-js",
       "react",
       "react-dom",
       "react-router-dom",
@@ -15,23 +16,23 @@ module.exports = {
       "classnames",
       "dva-core",
       "dva-loading",
-      "qs"
-    ]
+      "qs",
+    ],
   },
   mode: "production",
   output: {
     path: path.resolve(__dirname, "../static/dll"),
     filename: "[name].dll.[hash:5].js",
-    library: "[name]_library"
+    library: "[name]_library",
   },
   performance: {
-    hints: false
+    hints: false,
   },
   plugins: [
     new webpack.DllPlugin({
       name: "[name]_library",
       path: path.resolve(__dirname, "../static/dll/manifest.json"),
-      context: __dirname
-    })
-  ]
+      context: __dirname,
+    }),
+  ],
 };
