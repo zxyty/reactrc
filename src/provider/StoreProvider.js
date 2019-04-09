@@ -7,6 +7,7 @@ import storage from "redux-persist/lib/storage";
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 import dva from "../utils/dva";
 import models from "../models";
+import config from "../config";
 
 const app = dva({
   initialState: {},
@@ -14,7 +15,7 @@ const app = dva({
   onReducer(reducer) {
     const persistConfig = {
       key: "root",
-      whitelist: [],
+      whitelist: config.cacheKeys,
       blacklist: [],
       storage: storage,
       stateReconciler: autoMergeLevel2,
